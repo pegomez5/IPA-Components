@@ -18,6 +18,36 @@ module mux (
 
 endmodule
 
+module not_word (
+   input [19:0] a,
+   output reg [19:0] c
+   
+);
+
+   always @(a) begin
+    // and operation on a,b
+        c = ~a;
+    
+   end  
+
+endmodule
+
+
+module and_word (
+   input [19:0] a,
+   input [19:0] b,
+   output reg [19:0] c
+   
+);
+
+   always @(a or b) begin
+    // and operation on a,b
+        c = a & b ;
+    
+   end  
+
+endmodule
+
 module or_word (
    input [19:0] a,
    input [19:0] b,
@@ -47,6 +77,22 @@ module shift_left(
    end  
 
 endmodule
+
+module shift_right(
+    input [19:0] a,
+    input [3:0] shift_num,
+    output reg [19:0] res
+   
+);
+
+   always @(a or shift_num) begin
+    // perform a basic shift lift 
+        res = a >> shift_num; 
+    
+   end  
+
+endmodule
+
 
 module ADDER (
 
