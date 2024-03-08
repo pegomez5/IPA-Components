@@ -25,7 +25,7 @@ module not_word (
 );
 
    always @(a) begin
-    // and operation on a,b
+    // not operation on a,b
         c = ~a;
     
    end  
@@ -71,7 +71,7 @@ module shift_left(
 );
 
    always @(a or shift_num) begin
-    // perform a basic shift lift 
+    // perform a basic shift left
         res = a << shift_num; 
     
    end  
@@ -86,7 +86,7 @@ module shift_right(
 );
 
    always @(a or shift_num) begin
-    // perform a basic shift lift 
+    // perform a basic shift right
         res = a >> shift_num; 
     
    end  
