@@ -111,3 +111,29 @@ module ADDER (
    end  
 
 endmodule
+
+module incrementer (
+    input [19:0] a,
+    output reg [19:0] b
+);
+
+    always @(a) begin
+        b = a + 1;
+    end
+    
+endmodule
+
+module swap (
+   input [19:0] a,
+   input [19:0] b,
+   output reg [19:0] swap_a,
+   output reg [19:0] swap_b
+);
+
+
+   always @(a, b) begin
+      swap_a = b;
+      swap_b = a;
+   end  
+
+endmodule
