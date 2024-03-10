@@ -89,7 +89,7 @@ module tb_dmux;
     );
 
     initial begin
-        $dumpfile("testbench_dmux.vcd");
+        $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
         $monitor ("I: 0b%0b - sel: 0b%0b - o0: 0b%0b - o1: 0b%0b - o2: 0b%0b - o3: 0b%0b - o4: 0b%0b - o5: 0b%0b - o6: 0b%0b - o7: 0b%0b - o8: 0b%0b - o9: 0b%0b - o10: 0b%0b - o11: 0b%0b - o12: 0b%0b - o13: 0b%0b - o14: 0b%0b - o15: 0b%0b", I, sel, o0, o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, o14, o15);
 
@@ -135,7 +135,7 @@ module tb_or_word;
 
 endmodule
 
-module testbench_xor;
+module tb_xor;
     // Set inputs and outputs
     reg [19:0] a;
     reg [19:0] b;
@@ -158,7 +158,7 @@ module testbench_xor;
         a <= 0;
         b <= 0;
 
-        $dumpfile("testbench_xor.vcd");
+        $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
         $monitor ("a: 0b%0b - b: 0b%0b - c: 0b%0b - zero: 0b%0b", a, b, c, zero);
 
@@ -206,11 +206,11 @@ module tb_shift_left;
 endmodule
 
 
-module tb_rshift;
+module tb_shift_right;
     // Set inputs and outputs
-    reg [19:0] data_in;
-    reg [3:0] amount;
-    wire [19:0] out;
+    reg [19:0] a;
+    reg [3:0] shift_num;
+    wire [19:0] res;
 
     integer i;
     integer MAX_ITERS = 10;
@@ -218,19 +218,19 @@ module tb_rshift;
 
     // Instantiate the lshift
     shift_right x0 (
-        .data_in (data_in),
-        .amount (amount),
-        .out (out)
+        .a (a),
+        .shift_num (shift_num),
+        .res (res)
     );
 
     initial begin
-        $dumpfile("testbench_lshift.vcd");
+        $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
-        $monitor ("data_in: 0b%0b - amount: 0b%0b - out: 0b%0b", data_in, amount, out);
+        $monitor ("a: 0b%0b - shift_num: 0b%0b - res: 0b%0b", a, shift_num, res);
 
         for (i = 0; i < MAX_ITERS; i++) begin
-            #10 data_in <= $urandom(SEED);
-                amount <= $urandom(SEED);
+            #10 a <= $urandom(SEED);
+                shift_num <= $urandom(SEED);
         end
     end
 
@@ -294,13 +294,69 @@ module tb_subtractor;
     );
 
     initial begin
-        $dumpfile("testbench_subtractor.vcd");
+        $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
         $monitor ("a: 0b%0b - b: 0b%0b - out: 0b%0b", a, b, out);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
                 b <= $urandom(SEED);
+        end
+    end
+
+endmodule
+
+module tb_rotate_right;
+    // Set inputs and outputs
+    reg [19:0] a;
+    wire [19:0] res;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the lshift
+    rotate_right x0 (
+        .a (a),
+        .res (res)
+    );
+
+    initial begin
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - res: 0b%0b", a, res);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+            
+        end
+    end
+
+endmodule
+
+module tb_rotate_left;
+    // Set inputs and outputs
+    reg [19:0] a;
+    wire [19:0] res;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the lshift
+    rotate_left x0 (
+        .a (a),
+        .res (res)
+    );
+
+    initial begin
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - res: 0b%0b", a, res);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+        
         end
     end
 

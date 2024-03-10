@@ -219,3 +219,25 @@ always @(a or b) begin
    out = a-b;
 end
 endmodule
+
+module rotate_left(
+   input [19:0] a,
+   output reg [19:0] res
+);
+
+always @(a) begin
+   res = {a[18:0],a[19]};
+end
+
+endmodule
+
+module rotate_right(
+   input [19:0] a,
+   output reg [19:0] res
+);
+
+always @(a) begin
+   res = {a[0],a[19:1]};
+end
+
+endmodule
