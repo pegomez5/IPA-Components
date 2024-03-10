@@ -2,7 +2,7 @@
 
 `default_nettype none
 
-module tb_mux;
+module TB_MUX;
     // Set inputs and outputs
     reg [19:0] a;
     reg [19:0] b;
@@ -14,7 +14,7 @@ module tb_mux;
     integer SEED = 10531;
 
     // Instantiate the MUX
-    mux x0 (
+    MUX x0 (
         .a (a),
         .b (b),
         .sel (sel),
@@ -40,7 +40,7 @@ module tb_mux;
 endmodule
 
 
-module tb_dmux;
+module TB_DMUX;
     // Set inputs and outputs
     reg [19:0] I;
     reg [3:0] sel;
@@ -66,8 +66,8 @@ module tb_dmux;
     integer MAX_ITERS = 25;
     integer SEED = 10531;
 
-    // Instantiate the dmux
-    dmux x0 (
+    // Instantiate the DMUX
+    DMUX x0 (
         .I (I),
         .sel (sel),
         .o0 (o0),
@@ -101,7 +101,37 @@ module tb_dmux;
 
 endmodule
 
-module tb_or_word;
+module TB_NOT;
+    reg [19:0] a;
+    wire [19:0] b;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the NOT
+    NOT x0 (
+        .a (a),
+        .b (b)
+        
+    );
+
+    initial begin
+        a <= 0;
+
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b ", a,b);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+              
+        end
+    end
+
+endmodule
+
+module TB_AND;
     // Set inputs and outputs
     reg [19:0] a;
     reg [19:0] b;
@@ -111,8 +141,8 @@ module tb_or_word;
     integer MAX_ITERS = 10;
     integer SEED = 10531;
 
-    // Instantiate the OR
-    or_word x0 (
+    // Instantiate the AND
+    AND x0 (
         .a (a),
         .b (b),
         .c (c)
@@ -135,7 +165,41 @@ module tb_or_word;
 
 endmodule
 
-module tb_xor;
+module TB_OR;
+    // Set inputs and outputs
+    reg [19:0] a;
+    reg [19:0] b;
+    wire [19:0] c;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the OR
+    OR x0 (
+        .a (a),
+        .b (b),
+        .c (c)
+        
+    );
+
+    initial begin
+        a <= 0;
+        b <= 0;
+
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b - c: 0b%0b ", a, b,c);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+
+endmodule
+
+module TB_XOR;
     // Set inputs and outputs
     reg [19:0] a;
     reg [19:0] b;
@@ -147,7 +211,7 @@ module tb_xor;
     integer SEED = 10531;
 
     // Instantiate the XOR
-    xor_word x0 (
+    XOR x0 (
         .a (a),
         .b (b),
         .c (c),
@@ -170,21 +234,21 @@ module tb_xor;
 
 endmodule
 
-module tb_shift_left;
+module TB_SHFTL;
     // Set inputs and outputs
     reg [19:0] a;
     reg  [3:0] shift_num;
-    wire [19:0] res;
+    wire [19:0] b;
 
     integer i;
     integer MAX_ITERS = 10;
     integer SEED = 10531;
 
-    // Instantiate the SHIFT LEFT
-    shift_left x0 (
+    // Instantiate the SHFTL
+    SHFTL x0 (
         .a (a),
         .shift_num (shift_num),
-        .res (res)
+        .b (b)
         
     );
 
@@ -194,7 +258,7 @@ module tb_shift_left;
 
         $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
-        $monitor ("a: 0b%0b - shift_num: 0b%0b - res: 0b%0b ", a,shift_num,res);
+        $monitor ("a: 0b%0b - shift_num: 0b%0b - b: 0b%0b ", a,shift_num,b);
         
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
@@ -206,27 +270,27 @@ module tb_shift_left;
 endmodule
 
 
-module tb_shift_right;
+module TB_SHFTR;
     // Set inputs and outputs
     reg [19:0] a;
     reg [3:0] shift_num;
-    wire [19:0] res;
+    wire [19:0] b;
 
     integer i;
     integer MAX_ITERS = 10;
     integer SEED = 10531;
 
-    // Instantiate the lshift
-    shift_right x0 (
+    // Instantiate the SHFTR
+    SHFTR x0 (
         .a (a),
         .shift_num (shift_num),
-        .res (res)
+        .b (b)
     );
 
     initial begin
         $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
-        $monitor ("a: 0b%0b - shift_num: 0b%0b - res: 0b%0b", a, shift_num, res);
+        $monitor ("a: 0b%0b - shift_num: 0b%0b - b: 0b%0b", a, shift_num, b);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
@@ -236,25 +300,203 @@ module tb_shift_right;
 
 endmodule
 
-module tb_ADDER;
+module TB_ROTL;
     // Set inputs and outputs
     reg [19:0] a;
-    reg [19:0] b;
-    reg c_in;
-    wire c_out;
-    wire [19:0] res;
+    wire [19:0] b;
 
     integer i;
     integer MAX_ITERS = 10;
     integer SEED = 10531;
 
-    // Instantiate the ADDER
-    ADDER x0 (
+    // Instantiate the ROTL
+    ROTL x0 (
+        .a (a),
+        .b (b)
+    );
+
+    initial begin
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b", a, b);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+        
+        end
+    end
+
+endmodule
+
+module TB_ROTR;
+    // Set inputs and outputs
+    reg [19:0] a;
+    wire [19:0] b;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the ROTR
+    ROTR x0 (
+        .a (a),
+        .b (b)
+    );
+
+    initial begin
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b", a, b);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+            
+        end
+    end
+
+endmodule
+
+module TB_SWAP;
+    // Set inputs and outputs
+    reg [19:0] a;
+    reg [19:0] b;
+    wire [19:0] swap_a;
+    wire [19:0] swap_b;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the SWAP
+    SWAP x0 (
+        .a (a),
+        .b (b),
+        .swap_a (swap_a),
+        .swap_b (swap_b)
+    );
+
+    initial begin
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b - swap_a: 0b%0b - swap_b: 0b%0b", a, b, swap_a,swap_b);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+
+endmodule
+
+module TB_INC;
+    reg [19:0] a;
+    wire [19:0] b;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the INC
+    INC x0 (
+        .a (a),
+        .b (b)
+        
+    );
+
+    initial begin
+        a <= 0;
+
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b ", a,b);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+              
+        end
+    end
+
+endmodule
+
+module TB_DEC;
+    reg [19:0] a;
+    wire [19:0] b;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the DEC
+    DEC x0 (
+        .a (a),
+        .b (b)
+        
+    );
+
+    initial begin
+        a <= 0;
+
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b ", a,b);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+              
+        end
+    end
+
+endmodule
+
+module TB_ADD;
+    // Set inputs and outputs
+    reg [19:0] a;
+    reg [19:0] b;
+    wire [19:0] c;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the SUB
+    ADD x0 (
+        .a (a),
+        .b (b),
+        .c (c)
+    );
+
+    initial begin
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b - c: 0b%0b", a, b, c);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+
+endmodule
+
+module TB_ADDC;
+    // Set inputs and outputs
+    reg [19:0] a;
+    reg [19:0] b;
+    reg c_in;
+    wire c_out;
+    wire [19:0] c;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the ADDC
+    ADDC x0 (
         .a (a),
         .b (b),
         .c_in (c_in),
         .c_out (c_out),
-        .res (res)
+        .c (c)
     );
 
     initial begin
@@ -264,7 +506,7 @@ module tb_ADDER;
 
         $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
-        $monitor ("a: 0b%0b - b: 0b%0b - c_in: 0b%0b  - c_out: 0b%0b  - res: 0b%0b ", a, b,c_in,c_out,res);
+        $monitor ("a: 0b%0b - b: 0b%0b - c_in: 0b%0b  - c_out: 0b%0b  - c: 0b%0b ", a, b,c_in,c_out,c);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
@@ -276,27 +518,27 @@ module tb_ADDER;
 endmodule
 
 
-module tb_subtractor;
+module TB_SUB;
     // Set inputs and outputs
     reg [19:0] a;
     reg [19:0] b;
-    wire [19:0] out;
+    wire [19:0] c;
 
     integer i;
     integer MAX_ITERS = 10;
     integer SEED = 10531;
 
     // Instantiate the SUB
-    sub_word x0 (
+    SUB x0 (
         .a (a),
         .b (b),
-        .out (out)
+        .c (c)
     );
 
     initial begin
         $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
-        $monitor ("a: 0b%0b - b: 0b%0b - out: 0b%0b", a, b, out);
+        $monitor ("a: 0b%0b - b: 0b%0b - c: 0b%0b", a, b, c);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
@@ -306,57 +548,155 @@ module tb_subtractor;
 
 endmodule
 
-module tb_rotate_right;
+module TB_EQ;
     // Set inputs and outputs
     reg [19:0] a;
-    wire [19:0] res;
+    reg [19:0] b;
+    wire zero;
 
     integer i;
     integer MAX_ITERS = 10;
     integer SEED = 10531;
 
-    // Instantiate the lshift
-    rotate_right x0 (
+    // Instantiate the EQ
+    EQ x0 (
         .a (a),
-        .res (res)
+        .b (b),
+        .zero (zero)
     );
 
     initial begin
         $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
-        $monitor ("a: 0b%0b - res: 0b%0b", a, res);
+        $monitor ("a: 0b%0b - b: 0b%0b - zero: 0b%0b", a, b, zero);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
-            
+                b <= $urandom(SEED);
         end
     end
 
 endmodule
 
-module tb_rotate_left;
+module TB_GT;
     // Set inputs and outputs
     reg [19:0] a;
-    wire [19:0] res;
+    reg [19:0] b;
+    wire sign;
 
     integer i;
     integer MAX_ITERS = 10;
     integer SEED = 10531;
 
-    // Instantiate the lshift
-    rotate_left x0 (
+    // Instantiate the GT
+    GT x0 (
         .a (a),
-        .res (res)
+        .b (b),
+        .sign (sign)
     );
 
     initial begin
         $dumpfile("testbench.vcd");
         $dumpvars(1,x0);
-        $monitor ("a: 0b%0b - res: 0b%0b", a, res);
+        $monitor ("a: 0b%0b - b: 0b%0b - sign: 0b%0b", a, b, sign);
 
         for (i = 0; i < MAX_ITERS; i++) begin
             #10 a <= $urandom(SEED);
-        
+                b <= $urandom(SEED);
+        end
+    end
+
+endmodule
+
+module TB_LT;
+    // Set inputs and outputs
+    reg [19:0] a;
+    reg [19:0] b;
+    wire sign;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the LT
+    LT x0 (
+        .a (a),
+        .b (b),
+        .sign (sign)
+    );
+
+    initial begin
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b - sign: 0b%0b", a, b, sign);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+
+endmodule
+
+module TB_GET;
+    // Set inputs and outputs
+    reg [19:0] a;
+    reg [19:0] b;
+    wire sign;
+    wire zero;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the EQ
+    GET x0 (
+        .a (a),
+        .b (b),
+        .sign (sign),
+        .zero (zero)
+    );
+
+    initial begin
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b - sign: 0b%0b - zero: 0b%0b", a, b, sign,zero);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+                b <= $urandom(SEED);
+        end
+    end
+
+endmodule
+
+module TB_LET;
+    // Set inputs and outputs
+    reg [19:0] a;
+    reg [19:0] b;
+    wire sign;
+    wire zero;
+
+    integer i;
+    integer MAX_ITERS = 10;
+    integer SEED = 10531;
+
+    // Instantiate the EQ
+    LET x0 (
+        .a (a),
+        .b (b),
+        .sign (sign),
+        .zero (zero)
+    );
+
+    initial begin
+        $dumpfile("testbench.vcd");
+        $dumpvars(1,x0);
+        $monitor ("a: 0b%0b - b: 0b%0b - sign: 0b%0b - zero: 0b%0b", a, b,sign, zero);
+
+        for (i = 0; i < MAX_ITERS; i++) begin
+            #10 a <= $urandom(SEED);
+                b <= $urandom(SEED);
         end
     end
 

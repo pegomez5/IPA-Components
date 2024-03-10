@@ -1,4 +1,4 @@
-module mux (
+module MUX (
    input [19:0] a,
    input [19:0] b,
    input sel,
@@ -18,36 +18,7 @@ module mux (
 
 endmodule
 
-module not_word (
-   input [19:0] a,
-   output reg [19:0] c
-   
-);
-
-   always @(a) begin
-    // not operation on a,b
-        c = ~a;
-    
-   end  
-
-endmodule
-
-
-module and_word (
-   input [19:0] a,
-   input [19:0] b,
-   output reg [19:0] c
-   
-);
-
-   always @(a or b) begin
-    // and operation on a,b
-        c = a & b ;
-    
-   end  
-
-endmodule
-module dmux(
+module DMUX(
    input [19:0] I,
    input [3:0] sel,
    output reg [19:0] o0,
@@ -106,7 +77,38 @@ always @(*) begin
 end
 endmodule 
 
-module or_word (
+module NOT (
+   input [19:0] a,
+   output reg [19:0] b
+   
+);
+
+   always @(a) begin
+    // not operation on a
+        b = ~a;
+    
+   end  
+
+endmodule
+
+
+module AND (
+   input [19:0] a,
+   input [19:0] b,
+   output reg [19:0] c
+   
+);
+
+   always @(a or b) begin
+    // and operation on a,b
+        c = a & b ;
+    
+   end  
+
+endmodule
+
+
+module OR (
    input [19:0] a,
    input [19:0] b,
    output reg [19:0] c
@@ -121,7 +123,7 @@ module or_word (
 
 endmodule
 
-module xor_word(
+module XOR(
    input [19:0] a,
    input [19:0] b,
    output reg [19:0] c,
@@ -135,56 +137,74 @@ module xor_word(
 
 endmodule
 
-module shift_left(
+module SHFTL(
     input [19:0] a,
     input [3:0] shift_num,
-    output reg [19:0] res
+    output reg [19:0] b
    
 );
 
    always @(a or shift_num) begin
     // perform a basic shift left
-        res = a << shift_num; 
+        b = a << shift_num; 
     
    end  
 
 endmodule
 
-module shift_right(
+module SHFTR(
     input [19:0] a,
     input [3:0] shift_num,
-    output reg [19:0] res
+    output reg [19:0] b
    
 );
 
    always @(a or shift_num) begin
     // perform a basic shift right
-        res = a >> shift_num; 
+        b = a >> shift_num; 
     
    end  
 
 endmodule
 
-
-module ADDER (
-
-    input [19:0] a,
-    input [19:0] b,
-    input c_in,
-    output reg c_out,
-    output reg [19:0] res
-   
+module ROTL(
+   input [19:0] a,
+   output reg [19:0] b
 );
 
-   always @(a or b or c_in) begin
-    // add a, b, and carry in
-        {c_out,res} = a + b + c_in;
-    
+always @(a) begin
+   b = {a[18:0],a[19]};
+end
+
+endmodule
+
+module ROTR(
+   input [19:0] a,
+   output reg [19:0] b
+);
+
+always @(a) begin
+   b = {a[0],a[19:1]};
+end
+
+endmodule
+
+module SWAP (
+   input [19:0] a,
+   input [19:0] b,
+   output reg [19:0] swap_a,
+   output reg [19:0] swap_b
+);
+
+
+   always @(a or b) begin
+      swap_a = b;
+      swap_b = a;
    end  
 
 endmodule
 
-module incrementer (
+module INC (
     input [19:0] a,
     output reg [19:0] b
 );
@@ -195,49 +215,143 @@ module incrementer (
     
 endmodule
 
-module swap (
-   input [19:0] a,
-   input [19:0] b,
-   output reg [19:0] swap_a,
-   output reg [19:0] swap_b
+module DEC (
+    input [19:0] a,
+    output reg [19:0] b
 );
 
+    always @(a) begin
+        b = a - 1;
+    end
+    
+endmodule
 
-   always @(a, b) begin
-      swap_a = b;
-      swap_b = a;
+module ADD (
+
+    input [19:0] a,
+    input [19:0] b,
+    output reg [19:0] c
+);
+
+   always @(a or b) begin
+    // add a, b no carry
+        c = a + b;
+    
    end  
 
 endmodule
-module sub_word(
+
+module ADDC (
+
+    input [19:0] a,
+    input [19:0] b,
+    input c_in,
+    output reg c_out,
+    output reg [19:0] c
+   
+);
+
+   always @(a or b or c_in) begin
+    // add a, b, and carry in
+        {c_out,c} = a + b + c_in;
+    
+   end  
+
+endmodule
+
+module SUB(
    input [19:0] a,
    input [19:0] b,
-   output reg [19:0] out
+   output reg [19:0] c
 );
 
 always @(a or b) begin
-   out = a-b;
+   c = a - b;
 end
 endmodule
 
-module rotate_left(
+module EQ(
    input [19:0] a,
-   output reg [19:0] res
+   input [19:0] b,
+   output reg zero
 );
 
-always @(a) begin
-   res = {a[18:0],a[19]};
+always @(a or b) begin
+   if (a == b)
+      zero = 1;
+   else
+      zero = 0;
+
 end
 
 endmodule
 
-module rotate_right(
+module GT(
    input [19:0] a,
-   output reg [19:0] res
+   input [19:0] b,
+   output reg sign
 );
 
-always @(a) begin
-   res = {a[0],a[19:1]};
+always @(a or b) begin
+   if (a > b)
+      sign = 0;
+   else
+      sign = 1;
+end
+
+endmodule
+
+module LT(
+   input [19:0] a,
+   input [19:0] b,
+   output reg sign
+);
+
+always @(a or b) begin
+   if (a < b)
+      sign = 1;
+   else
+      sign = 0;
+end
+
+endmodule
+
+module GET(
+   input [19:0] a,
+   input [19:0] b,
+   output reg sign,
+   output reg zero
+);
+
+always @(a or b) begin
+   if (a >= b) begin
+      sign = 0;
+      zero = 1;
+   end
+   else begin
+      sign = 1;
+      zero = 0;
+   end
+end
+
+endmodule
+
+module LET(
+   input [19:0] a,
+   input [19:0] b,
+   output reg sign,
+   output reg zero
+);
+
+always @(a or b) begin
+   if (a <= b) begin
+      sign = 1;
+      zero = 1;
+   end
+   else begin
+      sign = 0;
+      zero = 0;
+   end
 end
 
 endmodule
