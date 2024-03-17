@@ -1,49 +1,106 @@
+/////////PROGRAM FLOW///////////////
 
 module TRAP (
-   input trap_mode_input,
    input clock,
-   input reset,
-   output reg trap_mode_output
+   output reg trap_mode
 );
 
-always @(posedge clock or posedge reset) begin
-   if(reset) begin
-      trap_mode_output <= 0;
-   end 
-   else begin
-      trap_mode_output <= trap_mode_input;
+   always @(posedge clock) begin
+      trap_mode <= 1;
    end
-end
 endmodule
 
 module NOP (
    input clock,
-   input reset,
-   output reg res
+   
 );
-   always @(posedge clock or posedge reset) begin
-      if (reset)  begin
-         res = 0;
-      end
-   end
+always @(posedge clock) begin
+   //no operation or output
+end
 
 endmodule
 
 module JMP (
    input clock,
-   input reset,
-   input [19:0] target_address
-   output reg pp //program pointer
+   input [19:0] target_address,
+   output reg [19:0] pp //program pointer
 );
 
-always @(posedge clock or posedge reset) begin
-   if(reset) begin
-      pp = 0;
+   always @(posedge clock) begin
+      pp <= target_address; //set program pointer to target address
+   end  
+
+endmodule
+
+module JMPZ (
+   input clock,
+   input zero,
+   input [19:0] target_address,
+   output reg [19:0] pp
+);
+
+   always @(posedge clock) begin
+      if (zero) begin
+         pp <= target_address;
+      end
    end
-   else begin
-      pp = target_address; //set program pointer to target address
+endmodule
+
+module JMPS (
+   input clock,
+   input sign,
+   input [19:0] target_address,
+   output reg [19:0] pp
+);
+
+   always @(posedge clock or target_address or sign) begin
+      if (sign) begin
+         pp <= target_address;
+      end
    end
-end  
+endmodule
+
+module JMPZS (
+   input clock,
+   input zero,
+   input sign,
+   input [19:0] target_address,
+   output reg [19:0] pp
+);
+
+   always @(posedge clock or target_address or zero) begin
+      if (sign & zero) begin
+         pp <= target_address;
+      end
+   end
+endmodule
+
+module LSTAT (
+   input clock,
+   input [19:0] status_register_data
+   output reg [19:0] general_purpose_register_data
+); 
+   always@(posedge clock) begin
+      general_purpose_register_data <= status_register_data;
+   
+   end
+
+endmodule
+
+module  XSTAT (
+   input clock,
+   input trap_mode,
+   input [19:0] status_register_data
+   output reg [19:0] general_purpose_register_data
+);
+   reg [19:0] temp;
+
+   always@(posedge clock) begin
+      temp <= status_register_data ^ general_purpose_register_data;
+      if (trap_mode) begin
+         general_purpose_register_data <= temp;
+      end
+   end
 
 endmodule
 
@@ -52,7 +109,6 @@ module MUX (
    input [19:0] b,
    input sel,
    output reg [19:0] c
-   
 );
 
    always @(a or b or sel) begin
@@ -126,6 +182,7 @@ always @(*) begin
 end
 endmodule 
 
+/////////////// LOGIC ///////////////
 module NOT (
    input [19:0] a,
    output reg [19:0] b
@@ -185,6 +242,8 @@ module XOR(
    end  
 
 endmodule
+
+/////////// BIT SHIFTS //////////////
 
 module SHFTL(
     input [19:0] a,
@@ -253,6 +312,8 @@ module SWAP (
 
 endmodule
 
+//////////// ARITHMETIC ////////////
+
 module INC (
     input [19:0] a,
     output reg [19:0] b
@@ -318,6 +379,8 @@ always @(a or b) begin
    c = a - b;
 end
 endmodule
+
+//////////// COMPARISON ////////////
 
 module EQ(
    input [19:0] a,
