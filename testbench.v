@@ -1,4 +1,4 @@
-`include "alu_components.v"
+`include "alu.v"
 
 `default_nettype none
 

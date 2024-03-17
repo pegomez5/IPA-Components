@@ -1,3 +1,52 @@
+
+module TRAP (
+   input trap_mode_input,
+   input clock,
+   input reset,
+   output reg trap_mode_output
+);
+
+always @(posedge clock or posedge reset) begin
+   if(reset) begin
+      trap_mode_output <= 0;
+   end 
+   else begin
+      trap_mode_output <= trap_mode_input;
+   end
+end
+endmodule
+
+module NOP (
+   input clock,
+   input reset,
+   output reg res
+);
+   always @(posedge clock or posedge reset) begin
+      if (reset)  begin
+         res = 0;
+      end
+   end
+
+endmodule
+
+module JMP (
+   input clock,
+   input reset,
+   input [19:0] target_address
+   output reg pp //program pointer
+);
+
+always @(posedge clock or posedge reset) begin
+   if(reset) begin
+      pp = 0;
+   end
+   else begin
+      pp = target_address; //set program pointer to target address
+   end
+end  
+
+endmodule
+
 module MUX (
    input [19:0] a,
    input [19:0] b,
