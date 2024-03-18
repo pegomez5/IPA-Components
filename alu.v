@@ -330,7 +330,7 @@ module DEC (
     output reg [19:0] b
 );
 
-    always @(a) begin
+   always @(a) begin
         b = a - 1;
     end
     
