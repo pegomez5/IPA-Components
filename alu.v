@@ -4,9 +4,13 @@ module TRAP (
    input clock,
    output reg trap_mode
 );
+   reg trap_mode_status;
 
    always @(posedge clock) begin
-      trap_mode <= 1;
+      if (!trap_mode_status) begin
+         trap_mode_status <= 1;
+         trap_mode <= 1;
+      end   
    end
 endmodule
 
