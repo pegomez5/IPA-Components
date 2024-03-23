@@ -1,4 +1,4 @@
-TESTBENCH=testbench
+TESTBENCH=urcpu
 
 all:
 	iverilog -o $(TESTBENCH).vvp $(TESTBENCH).v

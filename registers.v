@@ -49,34 +49,61 @@ assign dynamic_pointer_register = dynamic_pointer;
 endmodule
 
 module status_register (
-    input trap_instruction,
-    input memory_access_instruction,
-    input zero,
-    input sign,
-    input overflow,
-    input underflow,
-    input carry_flag,
-    input division_by_zero,
+    input zero_flag,
+    input sign_flag,
+    input overflow_flag,
+    input underflow_flag,
+    input carry_flag_fw,
+    input carry_flag_hwl,
+    input carry_flag_hwh,
+    input division_by_zero_flag,
     input half_word_mode,
     input same_register_flag,
-    input memory_violation,
-    input memory_corruption,
+    input memory_violation_flag,
+    input memory_corruption_flag,
     input trap_mode,
-    output reg [19:0]status_register
+    output reg [14:0]status_register
 );
     always @(*) begin
-        
-        // finish the rest of the outputs
-        if (trap_instruction) begin
-            trap_mode <= 1;
-        end
+        //concatenate flags to be represented
+        //in status register
+        status_register = {zero_flag,sign_flag,overflow_flag
+        ,underflow_flag,carry_flag_fw,carry_flag_hwl
+        ,carry_flag_hwh,division_by_zero_flag,half_word_mode
+        ,same_register_flag,memory_violation_flag,memory_corruption_flag
+        ,trap_mode}
     end    
         
         
 endmodule
 
 module increment_registers (
-    ports
+    input clock,
+    input instruction_complete, //instruction complete signal
+    input memory_access, // signal for accessing memory
+    input memory_correction, //signal for memory correction
+    output reg [19:0]instruction_count,
+    output reg [19:0] memory_access_count,
+    output reg [19:0] memory_correction_count
 );
+    
+reg[19:0]  instruction_count_register; 
+reg[19:0]  memory_access_register;
+reg[19:0] memory_correction_register;
+always @(*) begin
+    if (instruction_complete) begin
+        instruction_count_register <= instruction_count_register + 1;
+    end
+    if(memory_access): begin
+        memory_access_register <= memory_access_register + 1;
+    end
+    if (memory_correction): begin
+        memory_correction_register <= memory_correction_register + 1;
+    end
+end
+
+assign instruction_count = instruction_count_register;
+assign memory_access_count = memory_access_register;
+assign memory_correction_count = memory_correction_register;
     
 endmodule

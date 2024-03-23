@@ -3,7 +3,6 @@
 
 module UrCPU (
     input clock,
-    input reset,
 );
   
 endmodule
