@@ -36,6 +36,7 @@ module LDD (
 );
 
 always @(posedge clock) begin
+    //load data contained in the origin address contained in Ro to destination register Rd.
     data_out[Rd] <= data_in [Ro][mem_address];
 end
     
@@ -52,6 +53,7 @@ module STD (
 );
 
 always @(posedge clock) begin
+    //store data contained in Ro to the destination in address Rd
     data_out[Rd][mem_address] <= data_in[Ro];
 end
 
